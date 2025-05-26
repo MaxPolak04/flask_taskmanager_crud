@@ -4,3 +4,9 @@ env/
 venv/
 .env/
 .venv/
+
+# Python Flask Files:
+.flaskenv
+
+# Compiled Python files
+__pycache__/
