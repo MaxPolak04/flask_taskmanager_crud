@@ -15,7 +15,9 @@ def form():
     if request.method == 'GET':
         return render_template('form.html')
     elif request.method == 'POST':
-        pass
+        email = request.form.get('email')
+        message = request.form.get('message')
+        return render_template('response.html', email=email, message=message)
 
 
 if __name__ == '__main__':
