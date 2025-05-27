@@ -17,6 +17,8 @@
                 <th scope="col">Status</th>
                 <th scope="col">Created at</th>
                 <th scope="col">Updated at</th>
+                <th scope="col"></th>
+                <th scope="col"></th>
             </tr>
         </thead>
         <tbody class="table-group-divider">
@@ -25,10 +27,23 @@
                 <th scope="row">{{ task.id }}</th>
                 <td>{{ task.title }}</td>
                 <td>{{ task.description }}</td>
-                <td>{{ task.is_done }}</td>
+                {% if task.is_done %}
+                <td><i class="bi bi-check text-success"></i></td>
+                {% else %}
+                <td><i class="bi bi-x text-danger"></i></td>
+                {% endif %}
                 <td>{{ task.created_at }}</td>
                 <td>{{ task.updated_at }}</td>
+                <td><button class="btn btn-sm btn-outline-info" type="button" data-bs-toggle="modal"
+                        data-bs-target="#editModal-{{ task.id }}">Edit</button></td>
+                <td><button class="btn btn-sm btn-outline-danger" type="button" data-bs-toggle="modal"
+                        data-bs-target="#deleteModal-{{ task.id }}">Delete</button></td>
             </tr>
+
+            {% include 'edit-modal.html' %}
+            
+            {% include 'delete-modal.html' %}
+
             {% endfor %}
         </tbody>
     </table>

@@ -17,6 +17,10 @@ body {
     min-height: 100vh;
 }
 
+.bi {
+    font-size: 3rem;
+}
+
 .hero-img {
     position: relative;
     display: flex;
