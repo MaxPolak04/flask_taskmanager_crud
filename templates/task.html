@@ -1,3 +1,7 @@
+{% from 'macros.html' import show_flash_message, show_all_flashed_messages %}
+
+
+
 {% extends 'base.html' %}
 
 
@@ -8,6 +12,9 @@
 
 {% block content %}
 <div class="container">
+    {{ show_all_flashed_messages() }}
+    <h1 class="mt-4">Tasks</h1>
+    <p class="lead">Manage your tasks efficiently.</p>
     <table class="table table-primary table-striped table-hover">
         <thead>
             <tr>
