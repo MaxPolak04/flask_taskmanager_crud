@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, url_for, redirect
+from flask import Flask, request, render_template, url_for, redirect, flash, get_flashed_messages
 from config import Config
 from models import Todo, db
 from pathlib import Path
@@ -21,6 +21,7 @@ def form():
     elif request.method == 'POST':
         email = request.form.get('email')
         message = request.form.get('message')
+        flash('Form submitted successfully!')
         return render_template('response.html', email=email, message=message)
     
 
@@ -37,11 +38,10 @@ def create_task():
     elif request.method == 'POST':
         title = request.form.get('title')
         description = request.form.get('description')
-        print(request.form)
-        print(title, description)
         new_task = Todo(title=title, description=description)
         db.session.add(new_task)
         db.session.commit()
+        flash('Task created successfully!')
         return redirect(url_for('get_all_tasks'))
     
 
@@ -52,6 +52,7 @@ def update_task(task_id):
     task.description = request.form.get('description')
     task.is_done = True if request.form.get('is_done') == 'True' else False
     db.session.commit()
+    flash('Task updated successfully!')
     return redirect(url_for('get_all_tasks'))
 
 
@@ -60,6 +61,7 @@ def delete_task(task_id):
     task = Todo.query.get_or_404(task_id)
     db.session.delete(task)
     db.session.commit()
+    flash('Task deleted successfully!')
     return redirect(url_for('get_all_tasks'))
 
 if __name__ == '__main__':
