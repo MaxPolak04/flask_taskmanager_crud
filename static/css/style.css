@@ -17,6 +17,32 @@ body {
     min-height: 100vh;
 }
 
+.hero-img {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 70vh;
+    text-align: center;
+    background: url("../img/automobile-3345601_1920.jpg") no-repeat center center/cover;
+    color: #fff;
+    z-index: 0;
+}
+
+.hero-img__shadow {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    z-index: -1;
+}
+
+.shadow {
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
 .footer {
     display: flex;
     justify-content: center;
