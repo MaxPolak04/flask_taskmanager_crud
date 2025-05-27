@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+
+
+{% block title %} Tasks {% endblock %}
+
+
+
+{% block content %}
+<div class="container">
+    <table class="table table-primary table-striped table-hover">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Title</th>
+                <th scope="col">Description</th>
+                <th scope="col">Status</th>
+                <th scope="col">Created at</th>
+                <th scope="col">Updated at</th>
+            </tr>
+        </thead>
+        <tbody class="table-group-divider">
+            {% for task in tasks %}
+            <tr>
+                <th scope="row">{{ task.id }}</th>
+                <td>{{ task.title }}</td>
+                <td>{{ task.description }}</td>
+                <td>{{ task.is_done }}</td>
+                <td>{{ task.created_at }}</td>
+                <td>{{ task.updated_at }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
