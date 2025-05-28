@@ -1,4 +1,5 @@
 from flask import Flask, request, render_template, url_for, redirect, flash, get_flashed_messages
+from flask_migrate import Migrate
 from config import Config
 from models import Todo, db
 from pathlib import Path
@@ -7,6 +8,8 @@ from pathlib import Path
 app = Flask(__name__)
 app.config.from_object(Config)
 db.init_app(app)
+migrate = Migrate(app, db)
+
 
 
 @app.route('/')
