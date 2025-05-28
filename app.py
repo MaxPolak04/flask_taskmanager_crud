@@ -27,8 +27,11 @@ def form():
 
 @app.route('/tasks', methods=['GET'])
 def get_all_tasks():
-    tasks = Todo.query.all()
-    return render_template('task.html', tasks=tasks)
+    page = request.args.get('page', 1, type=int)
+    per_page = 10
+    pagination = Todo.query.order_by(Todo.id.desc()).paginate(page=page, per_page=per_page)
+    tasks = pagination.items
+    return render_template('task.html', tasks=tasks, pagination=pagination)
 
 
 @app.route('/create-task', methods=['GET', 'POST'])
