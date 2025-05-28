@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, url_for, redirect, flash, get_flashed_messages
+from flask import Flask, request, render_template, url_for, redirect, flash
 from flask_migrate import Migrate
 from config import Config
 from models import Todo, db
@@ -24,7 +24,7 @@ def form():
     elif request.method == 'POST':
         email = request.form.get('email')
         message = request.form.get('message')
-        flash('Form submitted successfully!')
+        flash('Form submitted successfully!', 'success')
         return render_template('response.html', email=email, message=message)
     
 
@@ -44,10 +44,27 @@ def create_task():
     elif request.method == 'POST':
         title = request.form.get('title')
         description = request.form.get('description')
+
+        if not title:
+            flash('Title is required!', 'danger')
+            return redirect(url_for('create_task'))
+        
+        if len(title) > 100:
+            flash('The title is too long (max 100 characters)!', 'danger')
+            return redirect(url_for('create_task'))
+
+        if description and len(description) > 300:
+            flash('The description can be at most 300 characters long!', 'danger')
+            return redirect(url_for('create_task'))
+
+        if description and not description.strip():
+            flash('Description cannot be just whitespace!', 'danger')
+            return redirect(url_for('create_task'))
+
         new_task = Todo(title=title, description=description)
         db.session.add(new_task)
         db.session.commit()
-        flash('Task created successfully!')
+        flash('Task created successfully!', 'success')
         return redirect(url_for('get_all_tasks'))
     
 
@@ -57,8 +74,17 @@ def update_task(task_id):
     task.title = request.form.get('title')
     task.description = request.form.get('description')
     task.is_done = True if request.form.get('is_done') == 'True' else False
+
+    # if not title:
+    #     flash('Title is required!')
+    #     return redirect(url_for('create_task'))
+    
+    # if description and not description.strip():
+    #     flash('Description cannot be just whitespace!')
+    #     return redirect(url_for('create_task'))
+    
     db.session.commit()
-    flash('Task updated successfully!')
+    flash('Task updated successfully!', 'success')
     return redirect(url_for('get_all_tasks'))
 
 
@@ -67,7 +93,7 @@ def delete_task(task_id):
     task = Todo.query.get_or_404(task_id)
     db.session.delete(task)
     db.session.commit()
-    flash('Task deleted successfully!')
+    flash('Task deleted successfully!', 'success')
     return redirect(url_for('get_all_tasks'))
 
 if __name__ == '__main__':
