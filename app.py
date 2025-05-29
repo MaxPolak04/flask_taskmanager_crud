@@ -74,15 +74,6 @@ def update_task(task_id):
     task.title = request.form.get('title')
     task.description = request.form.get('description')
     task.is_done = True if request.form.get('is_done') == 'True' else False
-
-    # if not title:
-    #     flash('Title is required!')
-    #     return redirect(url_for('create_task'))
-    
-    # if description and not description.strip():
-    #     flash('Description cannot be just whitespace!')
-    #     return redirect(url_for('create_task'))
-    
     db.session.commit()
     flash('Task updated successfully!', 'success')
     return redirect(url_for('get_all_tasks'))
@@ -95,6 +86,22 @@ def delete_task(task_id):
     db.session.commit()
     flash('Task deleted successfully!', 'success')
     return redirect(url_for('get_all_tasks'))
+
+
+@app.route('/signup', methods=['GET', 'POST'])
+def signup():
+    pass
+
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    pass
+
+
+@app.route('/logout')
+def logout():
+    pass
+
 
 if __name__ == '__main__':
     app.run()
