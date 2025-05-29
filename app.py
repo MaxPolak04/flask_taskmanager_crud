@@ -1,7 +1,9 @@
 from flask import Flask, request, render_template, url_for, redirect, flash
+from werkzeug.security import generate_password_hash, check_password_hash
 from flask_migrate import Migrate
+from flask_login import LoginManager
 from config import Config
-from models import Todo, db
+from models import Todo, User, db
 from pathlib import Path
 
 
@@ -9,7 +11,15 @@ app = Flask(__name__)
 app.config.from_object(Config)
 db.init_app(app)
 migrate = Migrate(app, db)
+login_manager = LoginManager()
+login_manager.login_view = 'login'
+login_manager.login_message = 'Please log in to access this page.'
+login_manager.init_app(app)
 
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
 
 
 @app.route('/')
