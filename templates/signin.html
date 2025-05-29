@@ -9,16 +9,24 @@
 {% block content %}
 <h1 class="display-5 text-center text-uppercase py-5">Sign in</h1>
 <div class="container">
-    <form action="{{ url_for('login') }}" method="POST">
+    <form action="{{ url_for('signin') }}" method="POST">
         <div class="mb-3">
             <label for="email" class="form-label">Email</label>
             <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email" required>
         </div>
         <div class="mb-3">
             <label for="password" class="form-label">Password</label>
-            <input type="password" class="form-control" id="password" name="password" placeholder="Enter your password" required>
+            <input type="password" class="form-control" id="password" name="password" placeholder="Enter your password"
+                required>
+        </div>
+        <div class="form-check mb-3">
+            <input class="form-check-input" type="checkbox" value="" id="rememberMe">
+            <label class="form-check-label" for="rememberMe">
+                Keep me signed in
+            </label>
         </div>
         <button type="submit" class="btn btn-primary">Sign In</button>
     </form>
+    <p class="mt-5 text-center">Don't have an account? <a href="{{ url_for('signup') }}">Sign up</a></p>
 </div>
 {% endblock %}

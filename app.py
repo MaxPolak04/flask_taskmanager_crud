@@ -1,9 +1,11 @@
 from flask import Flask, request, render_template, url_for, redirect, flash
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_migrate import Migrate
-from flask_login import LoginManager
+from flask_login import LoginManager, login_user, logout_user, login_required
 from config import Config
 from models import Todo, User, db
+from utils.utils import allowed_file
+from datetime import timedelta
 from pathlib import Path
 
 
@@ -12,7 +14,7 @@ app.config.from_object(Config)
 db.init_app(app)
 migrate = Migrate(app, db)
 login_manager = LoginManager()
-login_manager.login_view = 'login'
+login_manager.login_view = 'signin'
 login_manager.login_message = 'Please log in to access this page.'
 login_manager.init_app(app)
 
@@ -39,6 +41,7 @@ def form():
     
 
 @app.route('/tasks', methods=['GET'])
+@login_required
 def get_all_tasks():
     page = request.args.get('page', 1, type=int)
     per_page = 10
@@ -48,6 +51,7 @@ def get_all_tasks():
 
 
 @app.route('/create-task', methods=['GET', 'POST'])
+@login_required
 def create_task():
     if request.method == 'GET':
         return render_template('task-form.html')
@@ -79,6 +83,7 @@ def create_task():
     
 
 @app.route('/update-task/<int:task_id>', methods=['POST'])
+@login_required
 def update_task(task_id):
     task = Todo.query.get_or_404(task_id)
     task.title = request.form.get('title')
@@ -90,6 +95,7 @@ def update_task(task_id):
 
 
 @app.route('/delete-task/<int:task_id>', methods=['POST'])
+@login_required
 def delete_task(task_id):
     task = Todo.query.get_or_404(task_id)
     db.session.delete(task)
@@ -100,17 +106,55 @@ def delete_task(task_id):
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
-    pass
+    if request.method == 'POST':
+        username = request.form.get('username')
+        email = request.form.get('email')
+        if request.form.get('password') == request.form.get('confirm_password'):
+            password = generate_password_hash(request.form.get('password'))
+            new_user = User(username=username, email=email, password=password)
+            db.session.add(new_user)
+            db.session.commit()
+            flash('User created successfully!', 'success')
+            return redirect(url_for('signin'))
+        else:
+            flash('Passwords do not match!', 'danger')
+            return redirect(url_for('signup'))
+    return render_template('signup.html')
 
 
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    pass
+@app.route('/signin', methods=['GET', 'POST'])
+def signin():
+    if request.method == 'POST':
+        email = request.form.get('email')
+        password = request.form.get('password')
+        remeber_me = request.form.get('remember_me')
+        user = User.query.filter_by(email=email).first()
+
+        if remeber_me:
+            app.permanent_session_lifetime = timedelta(days=7)
+        else:
+            app.permanent_session_lifetime = timedelta(minutes=15)
+            
+        if not user:
+            flash('Email not found!', 'danger')
+            return redirect(url_for('login'))
+        if not check_password_hash(user.password, password):
+            flash('Incorrect password!', 'danger')
+            return redirect(url_for('login'))
+        login_user(user, remember=remeber_me)
+        user.last_login_at = db.func.now()
+        db.session.commit()
+        flash('Logged in successfully!', 'success')
+        return redirect(url_for('get_all_tasks'))
+    return render_template('signin.html')
 
 
-@app.route('/logout')
-def logout():
-    pass
+@app.route('/signout')
+@login_required
+def signout():
+    logout_user()
+    flash('Logged out successfully!', 'success')
+    return redirect(url_for('index'))
 
 
 if __name__ == '__main__':
