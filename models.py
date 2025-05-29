@@ -13,7 +13,7 @@ class Todo(db.Model):
     is_done = db.Column(db.Boolean, default=False)
     created_at = db.Column(db.DateTime, server_default=db.func.now())
     updated_at = db.Column(db.DateTime, server_default=db.func.now(), onupdate=db.func.now())
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id', name='fk_todos_user_id'), nullable=False)
 
     def __repr__(self):
         return f'<Todo {self.title}>'
