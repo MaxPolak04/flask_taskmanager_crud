@@ -138,10 +138,10 @@ def signin():
             
         if not user:
             flash('Email not found!', 'danger')
-            return redirect(url_for('login'))
+            return redirect(url_for('signin'))
         if not check_password_hash(user.password, password):
             flash('Incorrect password!', 'danger')
-            return redirect(url_for('login'))
+            return redirect(url_for('signin'))
         login_user(user, remember=remeber_me)
         user.last_login_at = db.func.now()
         db.session.commit()
@@ -216,6 +216,9 @@ def update_user(user_id):
     elif request.form.get('password') != request.form.get('confirm_password'):
         flash('Passwords do not match!', 'danger')
         return redirect(url_for('manage_users'))
+    else:
+        hashed_password = generate_password_hash(request.form.get('password'))
+        user.password = hashed_password
     
     user.is_admin = True if request.form.get('is_admin') == 'True' else False
     db.session.commit()
