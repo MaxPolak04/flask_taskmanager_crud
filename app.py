@@ -54,36 +54,33 @@ def get_all_tasks():
     return render_template('task.html', tasks=tasks, pagination=pagination)
 
 
-@app.route('/create-task', methods=['GET', 'POST'])
+@app.route('/create-task', methods=['POST'])
 @login_required
 def create_task():
-    if request.method == 'GET':
-        return render_template('task-form.html')
-    elif request.method == 'POST':
-        title = request.form.get('title')
-        description = request.form.get('description')
+    title = request.form.get('title')
+    description = request.form.get('description')
 
-        if not title:
-            flash('Title is required!', 'danger')
-            return redirect(url_for('create_task'))
-        
-        if len(title) > 100:
-            flash('The title is too long (max 100 characters)!', 'danger')
-            return redirect(url_for('create_task'))
-
-        if description and len(description) > 300:
-            flash('The description can be at most 300 characters long!', 'danger')
-            return redirect(url_for('create_task'))
-
-        if description and not description.strip():
-            flash('Description cannot be just whitespace!', 'danger')
-            return redirect(url_for('create_task'))
-
-        new_task = Todo(title=title, description=description, user_id=current_user.id)
-        db.session.add(new_task)
-        db.session.commit()
-        flash('Task created successfully!', 'success')
+    if not title:
+        flash('Title is required!', 'danger')
         return redirect(url_for('get_all_tasks'))
+    
+    if len(title) > 100:
+        flash('The title is too long (max 100 characters)!', 'danger')
+        return redirect(url_for('get_all_tasks'))
+
+    if description and len(description) > 300:
+        flash('The description can be at most 300 characters long!', 'danger')
+        return redirect(url_for('get_all_tasks'))
+
+    if description and not description.strip():
+        flash('Description cannot be just whitespace!', 'danger')
+        return redirect(url_for('get_all_tasks'))
+
+    new_task = Todo(title=title, description=description, user_id=current_user.id)
+    db.session.add(new_task)
+    db.session.commit()
+    flash('Task created successfully!', 'success')
+    return redirect(url_for('get_all_tasks'))
     
 
 @app.route('/update-task/<int:task_id>', methods=['POST'])
@@ -174,6 +171,26 @@ def manage_users():
         .paginate(page=page, per_page=per_page)
     users = pagination.items
     return render_template('manage-users.html', users=users, pagination=pagination)
+
+
+@app.route('/create_user', methods=['POST'])
+@login_required
+def create_user():
+    username = request.form.get('username')
+    email = request.form.get('email')
+    if not request.form.get('password') or not request.form.get('confirm_password'):
+        flash('Password is required!', 'danger')
+        return redirect(url_for('manage_users'))
+    elif request.form.get('password') != request.form.get('confirm_password'):
+        flash('Passwords do not match!', 'danger')
+        return redirect(url_for('manage_users'))
+    password = generate_password_hash(request.form.get('password'))
+    is_admin = True if request.form.get('is_admin') == 'True' else False
+    new_user = User(username=username, email=email, password=password, is_admin=is_admin)
+    db.session.add(new_user)
+    db.session.commit()
+    flash('User created successfully!', 'success')
+    return redirect(url_for('manage_users'))
 
 
 @app.route('/update_user/<int:user_id>', methods=['POST'])
