@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, url_for, redirect, flash
+from flask import Flask, request, render_template, url_for, redirect, session, flash
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_migrate import Migrate
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
@@ -16,6 +16,7 @@ migrate = Migrate(app, db)
 login_manager = LoginManager()
 login_manager.login_view = 'signin'
 login_manager.login_message = 'Please log in to access this page.'
+login_manager.login_message_category = 'warning'
 login_manager.init_app(app)
 
 
@@ -128,10 +129,11 @@ def signin():
     if request.method == 'POST':
         email = request.form.get('email')
         password = request.form.get('password')
-        remeber_me = request.form.get('remember_me')
+        remember_me = True if request.form.get('remember_me') == 'on' else False
         user = User.query.filter_by(email=email).first()
 
-        if remeber_me:
+        session.permanent = True
+        if remember_me:
             app.permanent_session_lifetime = timedelta(days=7)
         else:
             app.permanent_session_lifetime = timedelta(minutes=15)
@@ -142,7 +144,7 @@ def signin():
         if not check_password_hash(user.password, password):
             flash('Incorrect password!', 'danger')
             return redirect(url_for('signin'))
-        login_user(user, remember=remeber_me)
+        login_user(user, remember=remember_me)
         user.last_login_at = db.func.now()
         db.session.commit()
         flash('Logged in successfully!', 'success')
