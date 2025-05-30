@@ -12,6 +12,7 @@ html {
 }
 
 body {
+    position: relative;
     font-size: 1.6rem;
     font-family: "Montserrat", sans-serif;
 }
@@ -22,6 +23,17 @@ main {
 
 .bi {
     font-size: 3rem;
+}
+
+.alert {
+    position: absolute;
+    max-width: 700px;
+    z-index: 2000;
+}
+
+.profile-img {
+    width: 5em; 
+    height: 5em;
 }
 
 .hero-img {
