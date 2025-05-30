@@ -1,8 +1,5 @@
-from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin
-
-
-db = SQLAlchemy()
+from TaskManager-CRUD import db
 
 
 class Todo(db.Model):

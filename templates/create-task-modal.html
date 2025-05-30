@@ -8,7 +8,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form id="createForm" action="{{ url_for('create_task') }}" method="POST" enctype="multipart/form-data">
+                <form id="createForm" action="{{ url_for('tasks.create_task') }}" method="POST" enctype="multipart/form-data">
                     <div class="mb-3">
                         <label for="title" class="form-label">Title:</label>
                         <input type="text" class="form-control" id="title" name="title" required>
