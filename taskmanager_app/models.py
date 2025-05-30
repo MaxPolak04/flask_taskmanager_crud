@@ -1,5 +1,8 @@
 from flask_login import UserMixin
-from TaskManager-CRUD import db
+from taskmanager_app import db
+
+
+
 
 
 class Todo(db.Model):

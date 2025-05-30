@@ -2,8 +2,8 @@ from flask import Flask, request, render_template, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_login import LoginManager
-from config import Config
-from models import db
+from taskmanager_app.config import Config
+# from .models import db
 
 
 db = SQLAlchemy()
@@ -11,11 +11,11 @@ migrate = Migrate()
 login_manager = LoginManager()
 
 
-def create_app(config_filename='config.py'):
+def create_app():
     """Create and configure the Flask application."""
 
     app = Flask(__name__)
-    app.config.from_pyfile(config_filename)
+    app.config.from_object(Config)
 
     db.init_app(app)
     migrate.init_app(app, db)

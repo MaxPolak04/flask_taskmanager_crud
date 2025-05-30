@@ -16,3 +16,11 @@ użycie Cookies (np. mechanizm sesji),
 manipulacja danymi (musi pojawić się jakiś CRUD poza operacjami na użytkownikach),
 dane zapisywane w bazie,
 mechanizmy zabezpieczeń aplikacji internetowych (np. CORS)
+
+
+flask-mail
+flask-wtf
+flask-limiter
+flask-talisman
+input validation
+logging on server

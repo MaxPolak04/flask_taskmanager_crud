@@ -1,4 +1,4 @@
-from config import Config
+from taskmanager_app.config import Config
 from flask import abort
 from flask_login import current_user, login_required
 from functools import wraps

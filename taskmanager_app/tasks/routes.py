@@ -1,13 +1,7 @@
-from flask import Flask, request, render_template, url_for, redirect, session, flash, abort
-from werkzeug.security import generate_password_hash, check_password_hash
-from flask_migrate import Migrate
-from flask_login import LoginManager, login_user, logout_user, login_required, current_user
+from flask import request, render_template, url_for, redirect, flash
+from flask_login import login_required, current_user
 from . import tasks_bp
-from config import Config
-from models import Todo, User, db
-from utils.utils import allowed_file, admin_required
-from datetime import timedelta
-from pathlib import Path
+from taskmanager_app.models import Todo, db
 
 
 @tasks_bp.route('/tasks', methods=['GET'])

@@ -2,7 +2,7 @@ from flask import request, render_template, url_for, redirect, session, flash, c
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, logout_user, login_required
 from . import auth_bp
-from models import User, db
+from taskmanager_app.models import User, db
 from datetime import timedelta
 
 

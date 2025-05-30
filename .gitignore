@@ -10,3 +10,8 @@ venv/
 
 # Compiled Python files
 __pycache__/
+
+# Databases
+*.db
+*.sqlite
+*.sqlite3

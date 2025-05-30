@@ -1,8 +1,8 @@
 from flask import request, render_template, url_for, redirect, flash, current_app
 from werkzeug.security import generate_password_hash
 from . import admin_bp
-from models import User, db
-from utils.utils import allowed_file, admin_required
+from taskmanager_app.models import User, db
+from taskmanager_app.utils import allowed_file, admin_required
 from pathlib import Path
 
 
