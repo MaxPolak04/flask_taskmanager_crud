@@ -30,7 +30,7 @@ class User(db.Model, UserMixin):
     created_at = db.Column(db.DateTime, server_default=db.func.now())
     last_login_at = db.Column(db.DateTime, server_default=db.func.now(), onupdate=db.func.now())
     is_admin = db.Column(db.Boolean, default=False)
-    profile_picture = db.Column(db.String(200), nullable=True, default='default.jpg')
+    profile_picture = db.Column(db.String(200), nullable=True, default='default.png')
     tasks = db.relationship('Todo', backref='user', lazy='joined', cascade='all, delete-orphan')
 
     def __repr__(self):

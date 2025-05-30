@@ -1,7 +1,7 @@
 from flask import Flask, request, render_template, url_for, redirect, flash
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_migrate import Migrate
-from flask_login import LoginManager, login_user, logout_user, login_required
+from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from config import Config
 from models import Todo, User, db
 from utils.utils import allowed_file
@@ -45,7 +45,11 @@ def form():
 def get_all_tasks():
     page = request.args.get('page', 1, type=int)
     per_page = 10
-    pagination = Todo.query.order_by(Todo.id.desc()).paginate(page=page, per_page=per_page)
+    pagination = Todo.query \
+        .filter_by(user_id=current_user.id) \
+        .order_by(Todo.id.desc()) \
+        .paginate(page=page, per_page=per_page)
+    
     tasks = pagination.items
     return render_template('task.html', tasks=tasks, pagination=pagination)
 
@@ -75,7 +79,7 @@ def create_task():
             flash('Description cannot be just whitespace!', 'danger')
             return redirect(url_for('create_task'))
 
-        new_task = Todo(title=title, description=description)
+        new_task = Todo(title=title, description=description, user_id=current_user.id)
         db.session.add(new_task)
         db.session.commit()
         flash('Task created successfully!', 'success')
@@ -155,6 +159,61 @@ def signout():
     logout_user()
     flash('Logged out successfully!', 'success')
     return redirect(url_for('index'))
+
+
+@app.route('/manage_users', methods=['GET'])
+@login_required
+def manage_users():
+    if not current_user.is_admin:
+        flash('You do not have permission to access this page.', 'danger')
+        return redirect(url_for('index'))
+    page = request.args.get('page', 1, type=int)
+    per_page = 10
+    pagination = User.query \
+        .order_by(User.id.desc()) \
+        .paginate(page=page, per_page=per_page)
+    users = pagination.items
+    return render_template('manage-users.html', users=users, pagination=pagination)
+
+
+@app.route('/update_user/<int:user_id>', methods=['POST'])
+@login_required
+def update_user(user_id):
+    user = User.query.get_or_404(user_id)
+    user.username = request.form.get('username') if request.form.get('username') else user.username
+    profile_picture = request.files.get('profile_picture')
+    if profile_picture and allowed_file(profile_picture.filename):
+        filename = f"{user.id}_{profile_picture.filename}"
+        profile_picture_path = Path(app.config['UPLOAD_FOLDER']) / filename
+        profile_picture.save(profile_picture_path)
+        user.profile_picture = filename
+
+    if not request.form.get('password') and not request.form.get('confirm_password'):
+        user.password = user.password
+    elif request.form.get('password') and not request.form.get('confirm_password'):
+        flash('Please confirm your password!', 'danger')
+        return redirect(url_for('manage_users'))
+    elif not request.form.get('password') and request.form.get('confirm_password'):
+        flash('You can\'t confirm a password you didn\'t enter!', 'danger')
+        return redirect(url_for('manage_users'))
+    elif request.form.get('password') != request.form.get('confirm_password'):
+        flash('Passwords do not match!', 'danger')
+        return redirect(url_for('manage_users'))
+    
+    user.is_admin = True if request.form.get('is_admin') == 'True' else False
+    db.session.commit()
+    flash('User updated successfully!', 'success')
+    return redirect(url_for('manage_users'))
+
+
+@app.route('/delete_user/<int:user_id>', methods=['POST'])
+@login_required
+def delete_user(user_id):
+    user = User.query.get_or_404(user_id)
+    db.session.delete(user)
+    db.session.commit()
+    flash('User deleted successfully!', 'success')
+    return redirect(url_for('manage_users'))
 
 
 if __name__ == '__main__':

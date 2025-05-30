@@ -1,6 +1,6 @@
 <!-- show flash message -->
 {% macro show_flash_message(message, category='success') %}
-<div class="alert alert-{{ category }} alert-dismissible fade show mt-5" role="alert">
+<div class="alert alert-{{ category }} alert-dismissible fade show my-5" role="alert">
     <p>{{ message }}</p>
     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 </div>
@@ -10,6 +10,6 @@
 <!-- show all flashed messages -->
 {% macro show_all_flashed_messages() %}
     {% for message, category in get_flashed_messages(with_categories=True) %}
-        {{ show_flash_message(message, category) }}
+        {{ show_flash_message(category, message) }}
     {% endfor %}
 {% endmacro %}
