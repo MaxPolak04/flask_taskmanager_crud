@@ -1,10 +1,10 @@
-from flask import Flask, request, render_template, url_for, redirect, session, flash
+from flask import Flask, request, render_template, url_for, redirect, session, flash, abort
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_migrate import Migrate
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from config import Config
 from models import Todo, User, db
-from utils.utils import allowed_file
+from utils.utils import allowed_file, admin_required
 from datetime import timedelta
 from pathlib import Path
 
@@ -48,7 +48,7 @@ def get_all_tasks():
     per_page = 10
     pagination = Todo.query \
         .filter_by(user_id=current_user.id) \
-        .order_by(Todo.id.desc()) \
+        .order_by(Todo.id) \
         .paginate(page=page, per_page=per_page)
     
     tasks = pagination.items
@@ -161,11 +161,8 @@ def signout():
 
 
 @app.route('/manage_users', methods=['GET'])
-@login_required
+@admin_required
 def manage_users():
-    if not current_user.is_admin:
-        flash('You do not have permission to access this page.', 'danger')
-        return redirect(url_for('index'))
     page = request.args.get('page', 1, type=int)
     per_page = 10
     pagination = User.query \
@@ -176,7 +173,7 @@ def manage_users():
 
 
 @app.route('/create_user', methods=['POST'])
-@login_required
+@admin_required
 def create_user():
     username = request.form.get('username')
     email = request.form.get('email')
@@ -196,7 +193,7 @@ def create_user():
 
 
 @app.route('/update_user/<int:user_id>', methods=['POST'])
-@login_required
+@admin_required
 def update_user(user_id):
     user = User.query.get_or_404(user_id)
     user.username = request.form.get('username') if request.form.get('username') else user.username
@@ -229,7 +226,7 @@ def update_user(user_id):
 
 
 @app.route('/delete_user/<int:user_id>', methods=['POST'])
-@login_required
+@admin_required
 def delete_user(user_id):
     user = User.query.get_or_404(user_id)
     db.session.delete(user)

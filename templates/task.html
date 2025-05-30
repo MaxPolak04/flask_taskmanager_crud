@@ -39,7 +39,7 @@
         <tbody class="table-group-divider">
             {% for task in tasks %}
             <tr>
-                <th scope="row">{{ task.id }}</th>
+                <th scope="row">{{ loop.index }}</th>
                 <td>{{ task.title }}</td>
                 <td>{{ task.description }}</td>
                 {% if task.is_done %}
