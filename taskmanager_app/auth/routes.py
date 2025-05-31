@@ -48,7 +48,7 @@ def signin():
         user.last_login_at = db.func.now()
         db.session.commit()
         flash('Logged in successfully!', 'success')
-        return redirect(url_for('get_all_tasks'))
+        return redirect(url_for('tasks.get_all_tasks'))
     return render_template('signin.html')
 
 

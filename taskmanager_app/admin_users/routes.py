@@ -12,7 +12,7 @@ def manage_users():
     page = request.args.get('page', 1, type=int)
     per_page = 10
     pagination = User.query \
-        .order_by(User.id.desc()) \
+        .order_by(User.id) \
         .paginate(page=page, per_page=per_page)
     users = pagination.items
     return render_template('manage-users.html', users=users, pagination=pagination)
@@ -44,9 +44,13 @@ def update_user(user_id):
     user = User.query.get_or_404(user_id)
     user.username = request.form.get('username') if request.form.get('username') else user.username
     profile_picture = request.files.get('profile_picture')
+
     if profile_picture and allowed_file(profile_picture.filename):
         filename = f"{user.id}_{profile_picture.filename}"
-        profile_picture_path = Path(current_app.config['UPLOAD_FOLDER']) / filename
+        upload_folder = Path(current_app.config['UPLOAD_FOLDER'])
+        upload_folder.mkdir(parents=True, exist_ok=True)  # tworzy katalog, jeśli nie istnieje
+        profile_picture_path = upload_folder / filename
+        print(profile_picture_path.resolve())
         profile_picture.save(profile_picture_path)
         user.profile_picture = filename
 

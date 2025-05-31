@@ -2,13 +2,16 @@ from flask import Flask, request, render_template, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_login import LoginManager
+from talisman import Talisman
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 from taskmanager_app.config import Config
-# from .models import db
 
 
 db = SQLAlchemy()
 migrate = Migrate()
 login_manager = LoginManager()
+limiter = Limiter(get_remote_address)
 
 
 def create_app():
@@ -20,6 +23,41 @@ def create_app():
     db.init_app(app)
     migrate.init_app(app, db)
     login_manager.init_app(app)
+
+    csp = {
+        'default-src': [
+            '\'self\'',
+            'https://fonts.googleapis.com',
+            'https://fonts.gstatic.com',
+            'https://cdn.jsdelivr.net',       # np. Bootstrap z CDN
+            'https://cdnjs.cloudflare.com',
+        ],
+        'img-src': ['*', 'data:'],
+        'script-src': [
+            '\'self\'',
+            'https://cdn.jsdelivr.net',
+            'https://cdnjs.cloudflare.com',
+            'https://code.jquery.com',
+        ],
+        'style-src': [
+            '\'self\'',
+            'https://fonts.googleapis.com',
+            'https://cdn.jsdelivr.net',
+            'https://cdnjs.cloudflare.com',
+        ],
+        'object-src': ['none'],
+        'base-uri': ['self']
+    }
+
+    Talisman(
+        app, 
+        content_security_policy=csp,
+        force_https=True,
+        strict_transport_security=True,
+        frame_options='SAMEORIGIN',
+        session_cookie_secure=True,
+        session_cookie_http_only=True
+    )
 
     login_manager.login_view = 'auth.signin'
     login_manager.login_message = 'Please log in to access this page.'
