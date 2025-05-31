@@ -2,6 +2,7 @@ from flask import Flask, request, render_template, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_login import LoginManager
+from flask_wtf.csrf import CSRFProtect
 from talisman import Talisman
 from flask_limiter import Limiter
 from taskmanager_app.config import Config
@@ -62,6 +63,8 @@ def create_app():
         session_cookie_secure=True,
         session_cookie_http_only=True
     )
+
+    csrf = CSRFProtect(app)
 
     login_manager.login_view = 'auth.signin'
     login_manager.login_message = 'Please log in to access this page.'

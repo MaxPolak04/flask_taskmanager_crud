@@ -1,9 +1,11 @@
 from flask import request, render_template, url_for, redirect, session, flash, current_app
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, logout_user, login_required
+# from flask_wtf import vali
 from . import auth_bp
 from taskmanager_app import limiter
 from taskmanager_app.models import User, db
+from taskmanager_app.forms.auth_forms import SignInForm
 from datetime import timedelta
 
 
@@ -29,17 +31,13 @@ def signup():
 @auth_bp.route('/signin', methods=['GET', 'POST'])
 @limiter.limit("5 per minute")
 def signin():
-    if request.method == 'POST':
-        email = request.form.get('email')
-        password = request.form.get('password')
-        remember_me = True if request.form.get('remember_me') == 'on' else False
-        user = User.query.filter_by(email=email).first()
+    form = SignInForm()
 
-        session.permanent = True
-        if remember_me:
-            current_app.permanent_session_lifetime = timedelta(days=7)
-        else:
-            current_app.permanent_session_lifetime = timedelta(minutes=15)
+    if form.validate_on_submit():
+        email = form.email.data
+        password = form.password.data
+        remember_me = form.remember_me.data
+        user = User.query.filter_by(email=email).first()
 
         if not user:
             flash('Email not found!', 'danger')
@@ -47,12 +45,20 @@ def signin():
         if not check_password_hash(user.password, password):
             flash('Incorrect password!', 'danger')
             return redirect(url_for('auth.signin'))
+        
+        session.permanent = True
+        if remember_me:
+            current_app.permanent_session_lifetime = timedelta(days=7)
+        else:
+            current_app.permanent_session_lifetime = timedelta(minutes=15)
+        
         login_user(user, remember=remember_me)
         user.last_login_at = db.func.now()
         db.session.commit()
+
         flash('Logged in successfully!', 'success')
         return redirect(url_for('tasks.get_all_tasks'))
-    return render_template('signin.html')
+    return render_template('signin.html', form=form)
 
 
 @auth_bp.route('/signout')

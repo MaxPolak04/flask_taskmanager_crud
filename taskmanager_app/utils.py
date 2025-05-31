@@ -1,7 +1,7 @@
 from taskmanager_app.config import Config
 from flask import abort
 from flask_login import current_user, login_required
-from flask_limiter.util import get_ipaddr
+from flask_limiter.util import get_remote_address
 from functools import wraps
 
 
@@ -23,7 +23,7 @@ def admin_required(f):
 def get_user_or_ip():
     if current_user.is_authenticated:
         return str(current_user.id)
-    return get_ipaddr()
+    return get_remote_address()
 
 
 def dynamic_limit():
