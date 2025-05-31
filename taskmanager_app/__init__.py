@@ -11,7 +11,10 @@ from taskmanager_app.config import Config
 db = SQLAlchemy()
 migrate = Migrate()
 login_manager = LoginManager()
-limiter = Limiter(get_remote_address)
+limiter = Limiter(
+    key_func=get_remote_address,
+    default_limits=["200 per day", "50 per hour"]
+)
 
 
 def create_app():
@@ -23,6 +26,7 @@ def create_app():
     db.init_app(app)
     migrate.init_app(app, db)
     login_manager.init_app(app)
+    limiter.init_app(app)
 
     csp = {
         'default-src': [
@@ -79,11 +83,13 @@ def create_app():
 
 
     @app.route('/')
+    @limiter.exempt
     def index():
         return render_template('index.html')
 
 
     @app.route('/form', methods=['GET', 'POST'])
+    @limiter.limit("5 per hour")
     def form():
         if request.method == 'GET':
             return render_template('form.html')

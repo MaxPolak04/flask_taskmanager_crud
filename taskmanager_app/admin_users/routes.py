@@ -1,12 +1,14 @@
 from flask import request, render_template, url_for, redirect, flash, current_app
 from werkzeug.security import generate_password_hash
 from . import admin_bp
+from taskmanager_app import limiter
 from taskmanager_app.models import User, db
 from taskmanager_app.utils import allowed_file, admin_required
 from pathlib import Path
 
 
 @admin_bp.route('/manage_users', methods=['GET'])
+@limiter.exempt
 @admin_required
 def manage_users():
     page = request.args.get('page', 1, type=int)
@@ -19,6 +21,7 @@ def manage_users():
 
 
 @admin_bp.route('/create_user', methods=['POST'])
+@limiter.limit("10 per minute")
 @admin_required
 def create_user():
     username = request.form.get('username')
@@ -39,6 +42,7 @@ def create_user():
 
 
 @admin_bp.route('/update_user/<int:user_id>', methods=['POST'])
+@limiter.limit("10 per minute")
 @admin_required
 def update_user(user_id):
     user = User.query.get_or_404(user_id)
@@ -76,6 +80,7 @@ def update_user(user_id):
 
 
 @admin_bp.route('/delete_user/<int:user_id>', methods=['POST'])
+@limiter.limit("10 per minute")
 @admin_required
 def delete_user(user_id):
     user = User.query.get_or_404(user_id)

@@ -2,11 +2,13 @@ from flask import request, render_template, url_for, redirect, session, flash, c
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, logout_user, login_required
 from . import auth_bp
+from taskmanager_app import limiter
 from taskmanager_app.models import User, db
 from datetime import timedelta
 
 
 @auth_bp.route('/signup', methods=['GET', 'POST'])
+@limiter.limit("10 per hour")
 def signup():
     if request.method == 'POST':
         username = request.form.get('username')
@@ -25,6 +27,7 @@ def signup():
 
 
 @auth_bp.route('/signin', methods=['GET', 'POST'])
+@limiter.limit("5 per minute")
 def signin():
     if request.method == 'POST':
         email = request.form.get('email')
