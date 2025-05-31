@@ -4,15 +4,15 @@ from flask_migrate import Migrate
 from flask_login import LoginManager
 from talisman import Talisman
 from flask_limiter import Limiter
-from flask_limiter.util import get_remote_address
 from taskmanager_app.config import Config
+from taskmanager_app.utils import get_user_or_ip
 
 
 db = SQLAlchemy()
 migrate = Migrate()
 login_manager = LoginManager()
 limiter = Limiter(
-    key_func=get_remote_address,
+    key_func=get_user_or_ip,
     default_limits=["200 per day", "50 per hour"]
 )
 

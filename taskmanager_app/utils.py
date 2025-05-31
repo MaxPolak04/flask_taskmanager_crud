@@ -1,6 +1,7 @@
 from taskmanager_app.config import Config
 from flask import abort
 from flask_login import current_user, login_required
+from flask_limiter.util import get_ipaddr
 from functools import wraps
 
 
@@ -17,3 +18,15 @@ def admin_required(f):
             abort(403)
         return f(*args, **kwargs)
     return decorated_function
+
+
+def get_user_or_ip():
+    if current_user.is_authenticated:
+        return str(current_user.id)
+    return get_ipaddr()
+
+
+def dynamic_limit():
+    if current_user.is_admin:
+        return "100 per day"
+    return "60 per day"

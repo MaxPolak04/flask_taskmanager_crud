@@ -3,6 +3,7 @@ from flask_login import login_required, current_user
 from . import tasks_bp
 from taskmanager_app import limiter
 from taskmanager_app.models import Todo, db
+from taskmanager_app.utils import dynamic_limit
 
 
 @tasks_bp.route('/', methods=['GET'])
@@ -21,7 +22,7 @@ def get_all_tasks():
 
 
 @tasks_bp.route('/create-task', methods=['POST'])
-@limiter.limit("60 per hour")
+@limiter.limit(dynamic_limit)
 @login_required
 def create_task():
     title = request.form.get('title')
@@ -51,7 +52,7 @@ def create_task():
 
 
 @tasks_bp.route('/update-task/<int:task_id>', methods=['POST'])
-@limiter.limit("60 per hour")
+@limiter.limit(dynamic_limit)
 @login_required
 def update_task(task_id):
     task = Todo.query.get_or_404(task_id)
@@ -64,7 +65,7 @@ def update_task(task_id):
 
 
 @tasks_bp.route('/delete-task/<int:task_id>', methods=['POST'])
-@limiter.limit("60 per hour")
+@limiter.limit(dynamic_limit)
 @login_required
 def delete_task(task_id):
     task = Todo.query.get_or_404(task_id)
