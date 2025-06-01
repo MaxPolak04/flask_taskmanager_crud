@@ -2,6 +2,7 @@ from flask import request, render_template, url_for, redirect, flash
 from flask_login import login_required, current_user
 from . import tasks_bp
 from taskmanager_app import limiter
+from taskmanager_app.forms.tasks_forms import CreateTaskForm, UpdateTaskForm, DeleteTaskForm
 from taskmanager_app.models import Todo, db
 from taskmanager_app.utils import dynamic_limit
 
@@ -18,37 +19,40 @@ def get_all_tasks():
         .paginate(page=page, per_page=per_page)
     
     tasks = pagination.items
-    return render_template('task.html', tasks=tasks, pagination=pagination)
+    update_forms = {task.id: UpdateTaskForm(obj=task) for task in tasks}
+    delete_forms = {task.id: DeleteTaskForm() for task in tasks}
+    return render_template('task.html', 
+                           tasks=tasks, 
+                           pagination=pagination,
+                           create_form=CreateTaskForm(),
+                           update_forms=update_forms,
+                           delete_forms=delete_forms)
 
 
 @tasks_bp.route('/create-task', methods=['POST'])
 @limiter.limit(dynamic_limit)
 @login_required
 def create_task():
-    title = request.form.get('title')
-    description = request.form.get('description')
+    form = CreateTaskForm()
 
-    if not title:
-        flash('Title is required!', 'danger')
+    if form.validate_on_submit():
+        title = form.title.data
+        description = form.description.data
+
+        if description and not description.strip():
+            flash('Description cannot be just whitespace!', 'danger')
+            return redirect(url_for('tasks.get_all_tasks'))
+
+        new_task = Todo(title=title, description=description, user_id=current_user.id)
+        db.session.add(new_task)
+        db.session.commit()
+        flash('Task created successfully!', 'success')
         return redirect(url_for('tasks.get_all_tasks'))
-
-    if len(title) > 100:
-        flash('The title is too long (max 100 characters)!', 'danger')
-        return redirect(url_for('tasks.get_all_tasks'))
-
-    if description and len(description) > 300:
-        flash('The description can be at most 300 characters long!', 'danger')
-        return redirect(url_for('tasks.get_all_tasks'))
-
-    if description and not description.strip():
-        flash('Description cannot be just whitespace!', 'danger')
-        return redirect(url_for('tasks.get_all_tasks'))
-
-    new_task = Todo(title=title, description=description, user_id=current_user.id)
-    db.session.add(new_task)
-    db.session.commit()
-    flash('Task created successfully!', 'success')
-    return redirect(url_for('tasks.get_all_tasks'))
+    return render_template('task.html', 
+                       tasks=Todo.query.filter_by(user_id=current_user.id).order_by(Todo.id).all(), 
+                       create_form=CreateTaskForm(),
+                       update_forms={task.id: UpdateTaskForm(obj=task) for task in Todo.query.filter_by(user_id=current_user.id)},
+                       form=form)
 
 
 @tasks_bp.route('/update-task/<int:task_id>', methods=['POST'])
@@ -56,12 +60,27 @@ def create_task():
 @login_required
 def update_task(task_id):
     task = Todo.query.get_or_404(task_id)
-    task.title = request.form.get('title')
-    task.description = request.form.get('description')
-    task.is_done = True if request.form.get('is_done') == 'True' else False
-    db.session.commit()
-    flash('Task updated successfully!', 'success')
-    return redirect(url_for('tasks.get_all_tasks'))
+    form = UpdateTaskForm()
+
+    if form.validate_on_submit():
+        task.title = form.title.data
+        
+        if form.description.data and not form.description.data.strip():
+            flash('Description cannot be just whitespace!', 'danger')
+            return redirect(url_for('tasks.get_all_tasks'))
+        else:
+            task.description = form.description.data
+
+        task.is_done = form.is_done.data
+        
+        db.session.commit()
+        flash('Task updated successfully!', 'success')
+        return redirect(url_for('tasks.get_all_tasks'))
+    return render_template('task.html', 
+                       tasks=Todo.query.filter_by(user_id=current_user.id).order_by(Todo.id).all(), 
+                       create_form=CreateTaskForm(),
+                       update_forms={task.id: UpdateTaskForm(obj=task) for task in Todo.query.filter_by(user_id=current_user.id)},
+                       form=form)
 
 
 @tasks_bp.route('/delete-task/<int:task_id>', methods=['POST'])

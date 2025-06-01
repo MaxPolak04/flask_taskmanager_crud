@@ -9,13 +9,20 @@
             </div>
             <div class="modal-body">
                 <form id="createForm" action="{{ url_for('tasks.create_task') }}" method="POST" enctype="multipart/form-data">
+                    {{ create_form.hidden_tag() }}
                     <div class="mb-3">
-                        <label for="title" class="form-label">Title:</label>
-                        <input type="text" class="form-control" id="title" name="title" required>
+                        {{ create_form.title.label(class="form-label") }}
+                        {{ create_form.title(class="form-control", placeholder="Enter task title") }}
+                        {% for error in create_form.title.errors %}
+                        <div class="text-danger">{{ error }}</div>
+                        {% endfor %}
                     </div>
                     <div class="mb-3">
-                        <label for="description" class="form-label">Description:</label>
-                        <textarea class="form-control" id="description" name="description" rows="3"></textarea>
+                        {{ create_form.description.label(class="form-label") }}
+                        {{ create_form.description(class="form-control", placeholder="Enter task description", rows=3) }}
+                        {% for error in create_form.description.errors %}
+                        <div class="text-danger">{{ error }}</div>
+                        {% endfor %}
                     </div>
                 </form>
             </div>
