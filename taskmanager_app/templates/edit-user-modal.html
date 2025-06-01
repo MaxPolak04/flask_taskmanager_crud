@@ -8,34 +8,48 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form id="editForm-{{ user.id }}" action="{{ url_for('admin.update_user', user_id=user.id) }}" method="POST" enctype="multipart/form-data">
+                {% set form = update_forms[user.id] %}
+                <form id="editForm-{{ user.id }}" action="{{ url_for('admin.update_user', user_id=user.id) }}"
+                    method="POST" enctype="multipart/form-data">
+                    {{ form.hidden_tag() }}
                     <div class="mb-3">
-                        <label for="username" class="form-label">Username:</label>
-                        <input type="text" class="form-control" id="username" name="username">
+                        {{ form.username.label(class="form-label") }}
+                        {{ form.username(class="form-control") }}
+                        {% for error in form.username.errors %}
+                            <div class="text-danger">{{ error }}</div>
+                        {% endfor %}
                     </div>
                     <div class="mb-3">
-                        <label for="profile_picture" class="form-label">Profile Picture:</label>
-                        <input type="file" class="form-control" id="profile_picture" name="profile_picture">
+                        {{ form.profile_picture.label(class="form-label") }}
+                        {{ form.profile_picture(class="form-control", accept="image/*") }}
+                        {% for error in form.profile_picture.errors %}
+                            <div class="text-danger">{{ error }}</div>
+                        {% endfor %}
                     </div>
                     <div class="mb-3">
-                        <label for="password" class="form-label">New Password:</label>
-                        <input type="password" class="form-control" id="password" name="password">
+                        {{ form.password.label(class="form-label") }}
+                        {{ form.password(class="form-control") }}
+                        {% for error in form.password.errors %}
+                            <div class="text-danger">{{ error }}</div>
+                        {% endfor %}
                     </div>
                     <div class="mb-3">
-                        <label for="confirm_password" class="form-label">Confirm Password:</label>
-                        <input type="password" class="form-control" id="confirm_password" name="confirm_password">
+                        {{ form.confirm_password.label(class="form-label") }}
+                        {{ form.confirm_password(class="form-control") }}
+                        {% for error in form.confirm_password.errors %}
+                            <div class="text-danger">{{ error }}</div>
+                        {% endfor %}
                     </div>
                     <div class="form-check mb-3">
-                        <input class="form-check-input" type="checkbox" value="True" id="is_admin" name="is_admin" {% if user.is_admin %}checked{% endif %}>
-                        <label class="form-check-label" for="is_admin">
-                            Is Admin
-                        </label>
+                        {{ form.is_admin(class="form-check-input") }}
+                        {{ form.is_admin.label(class="form-check-label") }}
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary edit-user-button" data-user-id="{{ user.id }}">Save changes</button>
+                <button type="button" class="btn btn-primary edit-user-button" data-user-id="{{ user.id }}">Save
+                    changes</button>
             </div>
         </div>
     </div>

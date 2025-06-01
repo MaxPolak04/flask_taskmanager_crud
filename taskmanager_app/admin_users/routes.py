@@ -1,9 +1,11 @@
 from flask import request, render_template, url_for, redirect, flash, current_app
 from werkzeug.security import generate_password_hash
+from werkzeug.utils import secure_filename
 from . import admin_bp
 from taskmanager_app import limiter
+from taskmanager_app.forms.admin_users_forms import CreateUserForm, UpdateUserForm, DeleteUserForm
 from taskmanager_app.models import User, db
-from taskmanager_app.utils import allowed_file, admin_required
+from taskmanager_app.utils import admin_required
 from pathlib import Path
 
 
@@ -16,29 +18,49 @@ def manage_users():
     pagination = User.query \
         .order_by(User.id) \
         .paginate(page=page, per_page=per_page)
+    
     users = pagination.items
-    return render_template('manage-users.html', users=users, pagination=pagination)
+    update_forms = {user.id: UpdateUserForm(obj=user) for user in users}
+    delete_forms = {user.id: DeleteUserForm() for user in users}
+
+    return render_template('manage-users.html', 
+                           users=users, 
+                           pagination=pagination, 
+                           form=CreateUserForm(),
+                           update_forms=update_forms, 
+                           delete_forms=delete_forms)
 
 
 @admin_bp.route('/create_user', methods=['POST'])
 @limiter.limit("10 per minute")
 @admin_required
 def create_user():
-    username = request.form.get('username')
-    email = request.form.get('email')
-    if not request.form.get('password') or not request.form.get('confirm_password'):
-        flash('Password is required!', 'danger')
+    form = CreateUserForm()
+    if form.validate_on_submit():
+        username = form.username.data
+        email = form.email.data
+        password = generate_password_hash(form.password.data)
+        is_admin = form.is_admin.data
+
+        new_user = User(username=username, email=email, password=password, is_admin=is_admin)
+        db.session.add(new_user)
+        db.session.commit()
+        flash('User created successfully!', 'success')
         return redirect(url_for('admin.manage_users'))
-    elif request.form.get('password') != request.form.get('confirm_password'):
-        flash('Passwords do not match!', 'danger')
-        return redirect(url_for('admin.manage_users'))
-    password = generate_password_hash(request.form.get('password'))
-    is_admin = True if request.form.get('is_admin') == 'True' else False
-    new_user = User(username=username, email=email, password=password, is_admin=is_admin)
-    db.session.add(new_user)
-    db.session.commit()
-    flash('User created successfully!', 'success')
-    return redirect(url_for('admin.manage_users'))
+    
+    page = request.args.get('page', 1, type=int)
+    per_page = 10
+    pagination = User.query \
+        .order_by(User.id) \
+        .paginate(page=page, per_page=per_page)
+
+    users = pagination.items
+    return render_template('manage-users.html',
+                           users=users,
+                           pagination=pagination, 
+                           form=form,
+                           update_forms={user.id: UpdateUserForm(obj=user) for user in users},
+                           delete_forms={user.id: DeleteUserForm() for user in users})
 
 
 @admin_bp.route('/update_user/<int:user_id>', methods=['POST'])
@@ -46,37 +68,42 @@ def create_user():
 @admin_required
 def update_user(user_id):
     user = User.query.get_or_404(user_id)
-    user.username = request.form.get('username') if request.form.get('username') else user.username
-    profile_picture = request.files.get('profile_picture')
+    form = UpdateUserForm()
 
-    if profile_picture and allowed_file(profile_picture.filename):
-        filename = f"{user.id}_{profile_picture.filename}"
-        upload_folder = Path(current_app.config['UPLOAD_FOLDER'])
-        upload_folder.mkdir(parents=True, exist_ok=True)  # tworzy katalog, jeśli nie istnieje
-        profile_picture_path = upload_folder / filename
-        print(profile_picture_path.resolve())
-        profile_picture.save(profile_picture_path)
-        user.profile_picture = filename
+    if form.validate_on_submit():
+        user.username = form.username.data
 
-    if not request.form.get('password') and not request.form.get('confirm_password'):
-        user.password = user.password
-    elif request.form.get('password') and not request.form.get('confirm_password'):
-        flash('Please confirm your password!', 'danger')
+        if form.profile_picture.data:
+            profile_picture = form.profile_picture.data
+            filename = secure_filename(profile_picture.filename)
+            upload_folder = Path(current_app.config['UPLOAD_FOLDER'])
+            upload_folder.mkdir(parents=True, exist_ok=True)
+            file_path = upload_folder / filename
+            profile_picture.save(file_path)
+            user.profile_picture = filename
+
+        if form.password.data:
+            user.password = generate_password_hash(form.password.data)
+
+        user.is_admin = form.is_admin.data
+
+        db.session.commit()
+        flash('User updated successfully!', 'success')
         return redirect(url_for('admin.manage_users'))
-    elif not request.form.get('password') and request.form.get('confirm_password'):
-        flash('You can\'t confirm a password you didn\'t enter!', 'danger')
-        return redirect(url_for('admin.manage_users'))
-    elif request.form.get('password') != request.form.get('confirm_password'):
-        flash('Passwords do not match!', 'danger')
-        return redirect(url_for('admin.manage_users'))
-    else:
-        hashed_password = generate_password_hash(request.form.get('password'))
-        user.password = hashed_password
     
-    user.is_admin = True if request.form.get('is_admin') == 'True' else False
-    db.session.commit()
-    flash('User updated successfully!', 'success')
-    return redirect(url_for('admin.manage_users'))
+    page = request.args.get('page', 1, type=int)
+    per_page = 10
+    pagination = User.query \
+        .order_by(User.id) \
+        .paginate(page=page, per_page=per_page)
+
+    users = pagination.items
+    return render_template('manage-users.html',
+                           users=users,
+                           pagination=pagination, 
+                           create_form=CreateUserForm(),
+                           update_forms={user.id: UpdateUserForm(obj=user) for user in users},
+                           delete_forms={user.id: DeleteUserForm() for user in users})
 
 
 @admin_bp.route('/delete_user/<int:user_id>', methods=['POST'])

@@ -50,9 +50,8 @@ def create_task():
         return redirect(url_for('tasks.get_all_tasks'))
     return render_template('task.html', 
                        tasks=Todo.query.filter_by(user_id=current_user.id).order_by(Todo.id).all(), 
-                       create_form=CreateTaskForm(),
-                       update_forms={task.id: UpdateTaskForm(obj=task) for task in Todo.query.filter_by(user_id=current_user.id)},
-                       form=form)
+                       create_form=form,
+                       update_forms={task.id: UpdateTaskForm(obj=task) for task in Todo.query.filter_by(user_id=current_user.id)})
 
 
 @tasks_bp.route('/update-task/<int:task_id>', methods=['POST'])

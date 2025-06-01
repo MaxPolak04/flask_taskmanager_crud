@@ -5,11 +5,6 @@ from flask_limiter.util import get_remote_address
 from functools import wraps
 
 
-def allowed_file(filename):
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in Config.ALLOWED_EXTENSIONS
-
-
 def admin_required(f):
     @wraps(f)
     @login_required
