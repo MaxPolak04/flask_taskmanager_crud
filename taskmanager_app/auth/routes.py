@@ -5,27 +5,35 @@ from flask_login import login_user, logout_user, login_required
 from . import auth_bp
 from taskmanager_app import limiter
 from taskmanager_app.models import User, db
-from taskmanager_app.forms.auth_forms import SignInForm
+from taskmanager_app.forms.auth_forms import SignUpForm, SignInForm
 from datetime import timedelta
 
 
 @auth_bp.route('/signup', methods=['GET', 'POST'])
 @limiter.limit("10 per hour")
 def signup():
-    if request.method == 'POST':
-        username = request.form.get('username')
-        email = request.form.get('email')
-        if request.form.get('password') == request.form.get('confirm_password'):
-            password = generate_password_hash(request.form.get('password'))
-            new_user = User(username=username, email=email, password=password)
-            db.session.add(new_user)
-            db.session.commit()
-            flash('User created successfully!', 'success')
-            return redirect(url_for('auth.signin'))
-        else:
-            flash('Passwords do not match!', 'danger')
+    form = SignUpForm()
+
+    if form.validate_on_submit():
+        username = form.username.data
+        email = form.email.data
+
+        if User.query.filter_by(username=username).first():
+                flash('Username already exists!', 'danger')
+                return redirect(url_for('auth.signup'))
+
+        if User.query.filter_by(email=email).first():
+            flash('Email already exists!', 'danger')
             return redirect(url_for('auth.signup'))
-    return render_template('signup.html')
+        
+        password = generate_password_hash(form.password.data)
+
+        new_user = User(username=username, email=email, password=password)
+        db.session.add(new_user)
+        db.session.commit()
+        flash('User created successfully!', 'success')
+        return redirect(url_for('auth.signin'))
+    return render_template('signup.html', form=form)
 
 
 @auth_bp.route('/signin', methods=['GET', 'POST'])
