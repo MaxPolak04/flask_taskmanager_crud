@@ -36,6 +36,10 @@ main {
     height: 5em;
 }
 
+.custom_link {
+    text-decoration: none;
+}
+
 .hero-img {
     position: relative;
     display: flex;

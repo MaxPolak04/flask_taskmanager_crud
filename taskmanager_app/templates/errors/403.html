@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+
+
+{% block title %}403 - Forbidden{% endblock %}
+
+
+
+{% block content %}
+    <div class="container d-flex flex-column justify-content-center align-items-center min-vh-100">
+        <h1 class="display-5 text-center text-uppercase text-danger py-5">403 Forbidden</h1>
+        <p class="text-center">You do not have permission to access this page.</p>
+        <p class="text-center">Better go back to the <a class="custom_link text-primary" href="{{ url_for('index') }}">home page</a>.</p>
+    </div>
+{% endblock %}

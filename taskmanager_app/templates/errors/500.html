@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+
+
+{% block title %}500 - Internal Server Error{% endblock %}
+
+
+
+{% block content %}
+    <div class="container d-flex flex-column justify-content-center align-items-center min-vh-100">
+        <h1 class="display-5 text-center text-uppercase text-danger py-5">500 Internal Server Error</h1>
+        <p class="text-center">Oops... we seem to have made a mistake, sorry!</p>
+        <p class="text-center">Better go back to the <a class="custom_link text-primary" href="{{ url_for('index') }}">home page</a>.</p>
+    </div>
+{% endblock %}

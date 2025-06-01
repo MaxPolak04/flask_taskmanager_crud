@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+
+
+{% block title %}404 - Not Found{% endblock %}
+
+
+
+{% block content %}
+    <div class="container d-flex flex-column justify-content-center align-items-center min-vh-100">
+        <h1 class="display-5 text-center text-uppercase text-danger py-5">404 Not Found</h1>
+        <p class="text-center">The requested page could not be found.</p>
+        <p class="text-center">Better go back to the <a class="custom_link text-primary" href="{{ url_for('index') }}">home page</a>.</p>
+    </div>
+{% endblock %}

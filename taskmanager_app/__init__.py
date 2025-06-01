@@ -79,10 +79,12 @@ def create_app():
     from .auth import auth_bp
     from .admin_users import admin_bp
     from .tasks import tasks_bp
+    from .errors import errors_bp
     
     app.register_blueprint(auth_bp, url_prefix='/auth')
     app.register_blueprint(admin_bp, url_prefix='/admin')
     app.register_blueprint(tasks_bp, url_prefix='/tasks')
+    app.register_blueprint(errors_bp)
 
 
     @app.route('/')

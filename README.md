@@ -18,8 +18,6 @@ dane zapisywane w bazie,
 mechanizmy zabezpieczeń aplikacji internetowych (np. CORS)
 
 
-flask-mail
 obsługa błędów
-testy
 upiększanie
 logging on server
