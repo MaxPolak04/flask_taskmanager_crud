@@ -19,5 +19,7 @@ mechanizmy zabezpieczeń aplikacji internetowych (np. CORS)
 
 
 flask-mail
-flask-wtf (input validation, CSRF token)
+obsługa błędów
+testy
+upiększanie
 logging on server

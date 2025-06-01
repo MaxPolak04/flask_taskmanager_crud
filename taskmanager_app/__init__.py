@@ -16,6 +16,7 @@ limiter = Limiter(
     key_func=get_user_or_ip,
     default_limits=["200 per day", "50 per hour"]
 )
+csrf = CSRFProtect()
 
 
 def create_app():
@@ -28,6 +29,7 @@ def create_app():
     migrate.init_app(app, db)
     login_manager.init_app(app)
     limiter.init_app(app)
+    csrf.init_app(app)
 
     csp = {
         'default-src': [
@@ -63,8 +65,6 @@ def create_app():
         session_cookie_secure=True,
         session_cookie_http_only=True
     )
-
-    csrf = CSRFProtect(app)
 
     login_manager.login_view = 'auth.signin'
     login_manager.login_message = 'Please log in to access this page.'
