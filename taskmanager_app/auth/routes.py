@@ -60,7 +60,7 @@ def signin():
         else:
             current_app.permanent_session_lifetime = timedelta(minutes=15)
         
-        login_user(user, remember=remember_me)
+        login_user(user, remember=remember_me, fresh=True)
         user.last_login_at = db.func.now()
         db.session.commit()
 
