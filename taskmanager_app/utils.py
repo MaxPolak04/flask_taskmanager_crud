@@ -1,8 +1,25 @@
 from taskmanager_app.config import Config
+from werkzeug.security import generate_password_hash
 from flask import abort
 from flask_login import current_user, login_required
 from flask_limiter.util import get_remote_address
 from functools import wraps
+
+
+def create_admin_if_missing():
+    from taskmanager_app.models import User
+    admin = User.query.filter_by(username='admin').first()
+    if not admin:
+        from taskmanager_app import db
+        password = Config.ADMIN_PASSWORD
+        new_admin = User(
+            username='admin',
+            email='admin@gmail.com',
+            password=generate_password_hash(password),
+            is_admin=True
+        )
+        db.session.add(new_admin)
+        db.session.commit()
 
 
 def admin_required(f):

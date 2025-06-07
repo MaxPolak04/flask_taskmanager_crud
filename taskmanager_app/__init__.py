@@ -103,6 +103,12 @@ def create_app():
             message = request.form.get('message')
             flash('Form submitted successfully!', 'success')
             return render_template('response.html', email=email, message=message)
+        
+    
+    with app.app_context():
+        from taskmanager_app.utils import create_admin_if_missing
+        db.create_all()
+        create_admin_if_missing()
 
 
     return app

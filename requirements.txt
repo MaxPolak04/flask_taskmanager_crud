@@ -7,3 +7,5 @@ Flask-WTF
 Flask-Limiter
 Flask-Talisman
 python-dotenv
+pymysql
+cryptography
