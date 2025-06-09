@@ -67,16 +67,32 @@ main {
 }
 
 .nav-profile-img {
-    display: none;
-    width: 2em;
-    margin-left: 1em;
-    border-radius: 50%;
-    object-fit: cover;
+    width: 3em;
+    height: 3em;
 }
 
 .edit-profile-img {
     width: 15em;
     height: 15em;
+}
+
+.navbar-brand {
+    font-family: "Henny Penny", system-ui;
+    font-size: 3rem;
+}
+
+.nav-link {
+    line-height: 34px;
+}
+
+.dropdown-item {
+    font-size: 1.4rem;
+}
+
+.nav-link:hover,
+.nav-item:hover,
+.dropdown-item:hover {
+    color: #0d6efd;
 }
 
 .footer {

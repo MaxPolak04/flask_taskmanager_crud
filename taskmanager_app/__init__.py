@@ -62,7 +62,6 @@ def create_app():
         force_https=True,
         strict_transport_security=True,
         frame_options='SAMEORIGIN',
-        # frame_options=None,
         session_cookie_secure=True,
         session_cookie_http_only=True
     )

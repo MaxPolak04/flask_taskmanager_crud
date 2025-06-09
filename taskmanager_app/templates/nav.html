@@ -1,6 +1,6 @@
 <nav class="navbar sticky-top navbar-expand-lg bg-body-tertiary top-0 shadow-sm z-index-1000">
     <div class="container">
-        <a class="navbar-brand" href="{{ url_for('tasks.get_all_tasks') }}">Navbar</a>
+        <a class="navbar-brand text-primary" href="{{ url_for('tasks.get_all_tasks') }}">TaskManager</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
             aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -9,10 +9,12 @@
             <div class="navbar-nav ms-auto">
                 <a class="nav-link px-3" href="{{ url_for('tasks.get_all_tasks') }}">Tasks</a>
                 {% if current_user.is_admin %}
-                    <a class="nav-link px-3" href="{{ url_for('admin.manage_users') }}">Manage Users</a>
+                    <a class="nav-link ps-3 pe-5" href="{{ url_for('admin.manage_users') }}">Manage Users</a>
                 {% endif %}
                 {% if current_user.is_authenticated %}
-                    <img src="{{ url_for('static', filename='uploads/' + current_user.profile_picture) }}" class="nav__img nav-profile-img" alt="Profile Picture">
+                    <div class="rounded-circle overflow-hidden nav-profile-img">
+                        <img src="{{ url_for('static', filename='uploads/' + current_user.profile_picture) }}" class="w-100 h-100 object-fit-cover nav-profile-img" alt="Profile Picture">
+                    </div>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Account</a>
                         <ul class="dropdown-menu">

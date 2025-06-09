@@ -8,37 +8,39 @@
 {% block content %}
 <h1 class="display-5 text-center text-uppercase py-5">Sign Up</h1>
 <div class="container">
-    <form action="{{ url_for('auth.signup') }}" method="POST">
-        {{ form.hidden_tag() }}
-        <div class="mb-3">
-            {{ form.username.label(class="form-label") }}
-            {{ form.username(class="form-control", placeholder="Enter your username") }}
-            {% for error in form.username.errors %}
-            <div class="text-danger">{{ error }}</div>
-            {% endfor %}
-        </div>
-        <div class="mb-3">
-            {{ form.email.label(class="form-label") }}
-            {{ form.email(class="form-control", placeholder="Enter your email") }}
-            {% for error in form.email.errors %}
-            <div class="text-danger">{{ error }}</div>
-            {% endfor %}
-        </div>
-        <div class="mb-3">
-            {{ form.password.label(class="form-label") }}
-            {{ form.password(class="form-control", placeholder="Enter your password") }}
-            {% for error in form.password.errors %}
-            <div class="text-danger">{{ error }}</div>
-            {% endfor %}
-        </div>
-        <div class="mb-3">
-            {{ form.confirm_password.label(class="form-label") }}
-            {{ form.confirm_password(class="form-control", placeholder="Confirm your password") }}
-            {% for error in form.confirm_password.errors %}
-            <div class="text-danger">{{ error }}</div>
-            {% endfor %}
-        </div>
-        {{ form.submit(class="btn btn-primary btn-lg") }}
-    </form>
+    <div class="d-flex justify-content-center align-items-center">
+        <form action="{{ url_for('auth.signup') }}" method="POST" class="w-25">
+            {{ form.hidden_tag() }}
+            <div class="mb-3">
+                {{ form.username.label(class="form-label") }}
+                {{ form.username(class="form-control", placeholder="Enter your username") }}
+                {% for error in form.username.errors %}
+                <div class="text-danger">{{ error }}</div>
+                {% endfor %}
+            </div>
+            <div class="mb-3">
+                {{ form.email.label(class="form-label") }}
+                {{ form.email(class="form-control", placeholder="Enter your email") }}
+                {% for error in form.email.errors %}
+                <div class="text-danger">{{ error }}</div>
+                {% endfor %}
+            </div>
+            <div class="mb-3">
+                {{ form.password.label(class="form-label") }}
+                {{ form.password(class="form-control", placeholder="Enter your password") }}
+                {% for error in form.password.errors %}
+                <div class="text-danger">{{ error }}</div>
+                {% endfor %}
+            </div>
+            <div class="mb-3">
+                {{ form.confirm_password.label(class="form-label") }}
+                {{ form.confirm_password(class="form-control", placeholder="Confirm your password") }}
+                {% for error in form.confirm_password.errors %}
+                <div class="text-danger">{{ error }}</div>
+                {% endfor %}
+            </div>
+            {{ form.submit(class="btn btn-primary btn-lg") }}
+        </form>
+    </div>
 </div>
 {% endblock %}

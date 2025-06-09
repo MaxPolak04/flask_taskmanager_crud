@@ -8,28 +8,30 @@
 {% block content %}
 <h1 class="display-5 text-center text-uppercase py-5">Sign in</h1>
 <div class="container">
-    <form action="{{ url_for('auth.signin') }}" method="POST">
-        {{ form.hidden_tag() }}
-        <div class="mb-3">
-            {{ form.email.label(class="form-label") }}
-            {{ form.email(class="form-control", placeholder="Enter your email") }}
-            {% for error in form.email.errors %}
-            <div class="text-danger">{{ error }}</div>
-            {% endfor %}
-        </div>
-        <div class="mb-3">
-            {{ form.password.label(class="form-label") }}
-            {{ form.password(class="form-control", placeholder="Enter your password") }}
-            {% for error in form.password.errors %}
-            <div class="text-danger">{{ error }}</div>
-            {% endfor %}
-        </div>
-        <div class="form-check mb-3">
-            {{ form.remember_me(class="form-check-input") }}
-            {{ form.remember_me.label(class="form-check-label") }}
-        </div>
-        {{ form.submit(class="btn btn-primary btn-lg") }}
-    </form>
+    <div class="d-flex justify-content-center align-items-center">
+        <form action="{{ url_for('auth.signin') }}" method="POST" class="w-25">
+            {{ form.hidden_tag() }}
+            <div class="mb-3">
+                {{ form.email.label(class="form-label") }}
+                {{ form.email(class="form-control", placeholder="Enter your email") }}
+                {% for error in form.email.errors %}
+                <div class="text-danger">{{ error }}</div>
+                {% endfor %}
+            </div>
+            <div class="mb-3">
+                {{ form.password.label(class="form-label") }}
+                {{ form.password(class="form-control", placeholder="Enter your password") }}
+                {% for error in form.password.errors %}
+                <div class="text-danger">{{ error }}</div>
+                {% endfor %}
+            </div>
+            <div class="form-check mb-3">
+                {{ form.remember_me(class="form-check-input") }}
+                {{ form.remember_me.label(class="form-check-label") }}
+            </div>
+            {{ form.submit(class="btn btn-primary btn-lg") }}
+        </form>
+    </div>
     <p class="mt-5 text-center">Don't have an account? <a href="{{ url_for('auth.signup') }}">Sign up</a></p>
 </div>
 {% endblock %}

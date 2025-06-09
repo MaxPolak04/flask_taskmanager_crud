@@ -18,20 +18,18 @@ dane zapisywane w bazie,
 mechanizmy zabezpieczeń aplikacji internetowych (np. CORS)
 
 
-obsługa błędów
-upiększanie
-dodanie zarządzanie profilem przez użytkownika
-logging on server
 
 
 Jakie zabezpieczenia ma aplikacja:
 - code injection (Szablony Jinja2)
 - podział na role (admin, zalogowany, niezalogowany)
 - ograniczanie dostępu do widoków aplikacji
-- zapobieganie SQL-injection (SQLAlchemy)
+- polityka haseł
+- zapobieganie SQL-injection (SQLAlchemy i Flask-WTF)
 - ochrona CSRF (Flask-WTF)
 - zapobieganie wprowadzaniu skryptów XSS (Flask-WTF)
 - zapobieganie ataką brute-force (Flask-Limiter)
 - zapobieganie nadmiernym obciążeniem (DoS) - Flask-Limiter
-- wymuszenie nagłówków HTTPS (Content-Security-Policy, Strict-Transport-Security, X-Frame-Options, X-Content-Type-Options, Referrer-Policy) - Talisman
-- silna ochrona nagłówków HTTP (Talisman)
+- wymuszenie nagłówków HTTPS - Talisman
+- dodanie nagłówków HTTP - (Content-Security-Policy, Strict-Transport-Security, X-Frame-Options, X-Content-Type-Options, Referrer-Policy) - Talisman
+- silna ochrona nagłówków HTTP - przed XSS i clickjacking (Talisman)
