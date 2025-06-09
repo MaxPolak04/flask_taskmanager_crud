@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, flash
+from flask import Flask, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_login import LoginManager
@@ -6,7 +6,7 @@ from flask_wtf.csrf import CSRFProtect
 from talisman import Talisman
 from flask_limiter import Limiter
 from taskmanager_app.config import Config
-from taskmanager_app.utils import get_user_or_ip
+from taskmanager_app.utils import get_user_or_ip, wait_for_db
 
 
 db = SQLAlchemy()
@@ -62,6 +62,7 @@ def create_app():
         force_https=True,
         strict_transport_security=True,
         frame_options='SAMEORIGIN',
+        # frame_options=None,
         session_cookie_secure=True,
         session_cookie_http_only=True
     )
@@ -90,23 +91,12 @@ def create_app():
     @app.route('/')
     @limiter.exempt
     def index():
-        return render_template('index.html')
-
-
-    @app.route('/form', methods=['GET', 'POST'])
-    @limiter.limit("5 per hour")
-    def form():
-        if request.method == 'GET':
-            return render_template('form.html')
-        elif request.method == 'POST':
-            email = request.form.get('email')
-            message = request.form.get('message')
-            flash('Form submitted successfully!', 'success')
-            return render_template('response.html', email=email, message=message)
+        return redirect(url_for('tasks.get_all_tasks'))
         
     
     with app.app_context():
         from taskmanager_app.utils import create_admin_if_missing
+        wait_for_db(app)
         db.create_all()
         create_admin_if_missing()
 

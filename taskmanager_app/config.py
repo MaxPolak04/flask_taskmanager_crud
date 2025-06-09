@@ -9,6 +9,9 @@ UPLOADS_DIR = STATIC_DIR / 'uploads'
 
 class Config:
     ADMIN_PASSWORD='Haslo123!'
+    # Connection to Container:
+    # SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:Haslo123!@db:3306/task_app'
+    # Connection to localhost:
     SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://flask_app:Pa$$w0rd@localhost/task_app'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SECRET_KEY = '88322916e7e590b9f5d43147bd2507ac5315b83cc5c1aaa5bc3aa8285f4c02c8'
