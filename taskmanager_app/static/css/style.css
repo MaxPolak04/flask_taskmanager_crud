@@ -66,8 +66,25 @@ main {
     background-color: rgba(0, 0, 0, 0.5);
 }
 
+.nav__img {
+
+}
+
+.nav-profile-img {
+    display: none;
+    width: 2em;
+    margin-left: 1em;
+    border-radius: 50%;
+}
+
 .footer {
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+@media (min-width: 992px) {
+    .nav-profile-img {
+        display: block;
+    }
 }

@@ -7,11 +7,12 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
             <div class="navbar-nav ms-auto">
-                <a class="nav-link" href="{{ url_for('tasks.get_all_tasks') }}">Tasks</a>
+                <a class="nav-link px-3" href="{{ url_for('tasks.get_all_tasks') }}">Tasks</a>
                 {% if current_user.is_admin %}
-                    <a class="nav-link" href="{{ url_for('admin.manage_users') }}">Manage Users</a>
+                    <a class="nav-link px-3" href="{{ url_for('admin.manage_users') }}">Manage Users</a>
                 {% endif %}
                 {% if current_user.is_authenticated %}
+                    <img src="{{ url_for('static', filename='uploads/' + current_user.profile_picture) }}" class="nav__img nav-profile-img" alt="Profile Picture">
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Account</a>
                         <ul class="dropdown-menu">
@@ -20,8 +21,8 @@
                         </ul>
                     </li>
                 {% else %}
-                    <a class="nav-link" href="{{ url_for('auth.signin') }}">Sign in</a>
-                    <a class="nav-link" href="{{ url_for('auth.signup') }}">Sign up</a>
+                    <a class="nav-link px-3" href="{{ url_for('auth.signin') }}">Sign in</a>
+                    <a class="nav-link px-3" href="{{ url_for('auth.signup') }}">Sign up</a>
                 {% endif %}
             </div>
         </div>
