@@ -1,7 +1,6 @@
-from flask import request, render_template, url_for, redirect, session, flash, current_app
+from flask import render_template, url_for, redirect, session, flash, current_app
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, logout_user, login_required
-# from flask_wtf import vali
 from . import auth_bp
 from taskmanager_app import limiter
 from taskmanager_app.models import User, db

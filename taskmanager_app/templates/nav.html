@@ -16,7 +16,7 @@
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Account</a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#">Edit Profile</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('edit_profile.edit_profile') }}">Edit Profile</a></li>
                             <li><a class="dropdown-item" href="{{ url_for('auth.signout') }}">Sign out</a></li>
                         </ul>
                     </li>

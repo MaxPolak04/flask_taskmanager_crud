@@ -17,6 +17,6 @@ def internal_error(error):
     return render_template('errors/500.html'), 500
 
 
-@errors_bp.app_errorhandler(Exception)
-def handle_exception(error):
-    return render_template("errors/500.html", error=error), 500
+# @errors_bp.app_errorhandler(Exception)
+# def handle_exception(error):
+#     return render_template("errors/500.html", error=error), 500
