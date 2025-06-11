@@ -2,7 +2,6 @@ Flask
 Flask-Login
 Flask-Migrate
 Flask-SQLAlchemy
-Flask-Login
 Flask-WTF
 Flask-Limiter
 Talisman
