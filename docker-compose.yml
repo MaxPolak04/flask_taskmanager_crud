@@ -2,15 +2,14 @@ services:
   web:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: docker/Dockerfile
     container_name: flask_app
     ports:
       - "5000:5000"
     depends_on:
       - db
-    environment:
-      - FLASK_APP=run.py
-      - FLASK_RUN_HOST=0.0.0.0
+    # volumes:
+    #   - ./app:/app
     networks:
       - flasknet
 
@@ -19,12 +18,28 @@ services:
     container_name: mysql_db
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: Haslo123!
-      MYSQL_DATABASE: task_app
+      MYSQL_ROOT_PASSWORD: rootpass
+      MYSQL_DATABASE: taskmanager
+      MYSQL_USER: flaskuser
+      MYSQL_PASSWORD: flaskpass
     ports:
       - "3306:3306"
     volumes:
       - db_data:/var/lib/mysql
+    networks:
+      - flasknet
+
+  nginx:
+    image: nginx:alpine
+    container_name: nginx_proxy
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx:/etc/nginx/conf.d
+      - ./certs:/etc/nginx/certs
+    depends_on:
+      - web
     networks:
       - flasknet
 
