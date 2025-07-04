@@ -130,10 +130,6 @@ But I also have plans for future features and improvements:
 
 - [ ] Unit testing using Pytest
 - [ ] Full environment separation (dev, staging, production)
-- [ ] Email notifications (registration, password reset)
-- [ ] REST API for frontend or integration
-- [ ] Admin dashboard with analytics
-- [ ] SPA frontend (Vue.js or React)
 
 ---
 
@@ -151,7 +147,7 @@ A closer look at key screens within the app:
 
 ### 🔐 Sign-in Page
 
-![Sign In](docs/screenshots/signin.png)
+![Sign In](docs/screenshots/sign-in-page.png)
 
 ### 📝 Editing a User Profile (Admin Panel)
 
