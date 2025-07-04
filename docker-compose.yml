@@ -1,6 +1,6 @@
 services:
   web:
-    image: maxpolak04/taskmanager-app:latest
+    image: maxpolak04/taskmanager-app:v1.0
     container_name: flask_app
     ports:
       - "5000:5000"
@@ -28,19 +28,15 @@ services:
       retries: 10
     volumes:
       - db_data:/var/lib/mysql
-      - ./docker/mysql/init:/docker-entrypoint-initdb.d
     networks:
       - flasknet
 
   nginx:
-    image: nginx:alpine
-    container_name: nginx_proxy
+    image: maxpolak04/flaskgate:v1.0
+    container_name: flask_nginx_proxy
     ports:
       - "80:80"
       - "443:443"
-    volumes:
-      - ./nginx:/etc/nginx/conf.d
-      - ./certs:/etc/nginx/certs
     depends_on:
       - web
     networks:
