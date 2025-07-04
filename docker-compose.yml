@@ -48,6 +48,15 @@ services:
     networks:
       - flasknet
 
+  redis:
+    image: redis:7-alpine
+    container_name: flask_redis
+    ports:
+      - "6379:6379"
+    networks:
+      - flasknet
+
+
 volumes:
   db_data:
 

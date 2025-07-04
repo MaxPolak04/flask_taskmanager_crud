@@ -4,7 +4,11 @@ from flask_migrate import Migrate
 from flask_login import LoginManager
 from flask_wtf.csrf import CSRFProtect
 from talisman import Talisman
+from flask_limiter.util import get_remote_address
 from flask_limiter import Limiter
+from redis import Redis
+from flask_limiter.util import get_remote_address
+from limits.storage import RedisStorage
 from taskmanager_app.config import Config
 from taskmanager_app.utils import get_user_or_ip, wait_for_db
 
@@ -12,9 +16,11 @@ from taskmanager_app.utils import get_user_or_ip, wait_for_db
 db = SQLAlchemy()
 migrate = Migrate()
 login_manager = LoginManager()
+storage_uri = "redis://redis:6379"
 limiter = Limiter(
     key_func=get_user_or_ip,
-    default_limits=["200 per day", "50 per hour"]
+    default_limits=["200 per day", "50 per hour"],
+    storage_uri=storage_uri
 )
 csrf = CSRFProtect()
 

@@ -3,7 +3,7 @@ Flask-Login
 Flask-Migrate
 Flask-SQLAlchemy
 Flask-WTF
-Flask-Limiter
+Flask-Limiter[redis]
 Talisman
 python-dotenv
 pymysql
