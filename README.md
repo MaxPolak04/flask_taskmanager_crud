@@ -40,26 +40,6 @@ The project supports full task and user management, including role assignment, s
 
 ## ⚡️ Quickstart
 
-Choose one of two options:
-
----
-
-### 🟢 Option A — GitHub Codespaces
-
-🖥️ *Requires a GitHub account*
-
-1. Click **[Open in Codespaces](#)** *(insert actual link)*
-2. Wait for the environment to initialize (≈1–2 min)
-3. Run the app:
-   ```
-   docker compose up --build
-   ```
-4. Open the preview URL, e.g. `https://<your-preview-url>`
-
----
-
-### 📦 Option B — Run Locally via Docker Compose
-
 1. Install [Docker](https://docs.docker.com/get-docker/) + [Docker Compose](https://docs.docker.com/compose/)
 2. Download only the Compose file:
    ```
