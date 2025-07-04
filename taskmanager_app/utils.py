@@ -13,8 +13,10 @@ import time
 
 def create_admin_if_missing():
     from taskmanager_app.models import User
+    print("Checking for admin user...")
     admin = User.query.filter_by(username='admin').first()
     if not admin:
+        print("Admin user not found, creating new admin...")
         from taskmanager_app import db
         password = Config.ADMIN_PASSWORD
 

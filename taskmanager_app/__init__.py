@@ -3,7 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_login import LoginManager
 from flask_wtf.csrf import CSRFProtect
-# from talisman import Talisman
+from talisman import Talisman
 from flask_limiter import Limiter
 from taskmanager_app.config import Config
 from taskmanager_app.utils import get_user_or_ip, wait_for_db
@@ -36,7 +36,7 @@ def create_app():
             '\'self\'',
             'https://fonts.googleapis.com',
             'https://fonts.gstatic.com',
-            'https://cdn.jsdelivr.net',       # np. Bootstrap z CDN
+            'https://cdn.jsdelivr.net',
             'https://cdnjs.cloudflare.com',
         ],
         'img-src': ['*', 'data:'],
@@ -56,15 +56,15 @@ def create_app():
         'base-uri': ['self']
     }
 
-    # Talisman(
-    #     app, 
-    #     content_security_policy=csp,
-    #     force_https=True,
-    #     strict_transport_security=True,
-    #     frame_options='SAMEORIGIN',
-    #     session_cookie_secure=True,
-    #     session_cookie_http_only=True
-    # )
+    Talisman(
+        app, 
+        content_security_policy=csp,
+        force_https=True,
+        strict_transport_security=True,
+        frame_options='SAMEORIGIN',
+        session_cookie_secure=True,
+        session_cookie_http_only=True
+    )
 
     login_manager.login_view = 'auth.signin'
     login_manager.login_message = 'Please log in to access this page.'
@@ -96,10 +96,7 @@ def create_app():
         
     
     with app.app_context():
-        from taskmanager_app.utils import create_admin_if_missing
         wait_for_db(app)
-        db.create_all()
-        create_admin_if_missing()
 
 
     return app
