@@ -36,10 +36,6 @@
 
 The project supports full task and user management, including role assignment, session management, access control, and administrator dashboards.
 
-![Password Validation Check](docs/screenshots/password-ckeck.png)
-
-![Admin User List View](docs/screenshots/users.png)
-
 ---
 
 ## ⚡️ Quickstart
