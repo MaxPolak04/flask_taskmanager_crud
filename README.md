@@ -43,7 +43,7 @@ The project supports full task and user management, including role assignment, s
 1. Install [Docker](https://docs.docker.com/get-docker/) + [Docker Compose](https://docs.docker.com/compose/)
 2. Download only the Compose file:
    ```
-   curl -O https://yourdomain.com/docker-compose.yml
+   curl -O https://raw.githubusercontent.com/MaxPolak04/flask_taskmanager_crud/main/docker-compose.yml
    ```
 3. Run the app:
    ```
