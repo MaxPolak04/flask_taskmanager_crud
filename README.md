@@ -135,4 +135,13 @@ A closer look at key screens within the app:
 
 ---
 
+## 📄 License
+
+This project is licensed under the  
+[![License: CC BY-NC 4.0](https://img.shields.io/badge/License-CC%20BY--NC%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by-nc/4.0/)  
+**Creative Commons Attribution-NonCommercial 4.0 International License.**  
+You are free to share and adapt the material for non-commercial purposes, as long as proper credit is given.
+
+---
+
 Thanks for checking out the project! Let me know if you'd like a deployment walkthrough, GitHub Actions integration, or a demo landing page 🌐🚀
